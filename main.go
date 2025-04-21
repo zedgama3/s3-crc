@@ -75,6 +75,32 @@ func main() {
 	var outputs []result
 
 	for _, pattern := range flag.Args() {
+		if pattern == "-" {
+			// Special case: read from stdin
+			sum, err := computeCRC64("-")
+			if err != nil {
+				log.Printf("error reading from stdin: %v\n", err)
+				continue
+			}
+			var out string
+			switch {
+			case *asHex:
+				out = fmt.Sprintf("%016x", sum)
+			case *uppercase:
+				out = fmt.Sprintf("%016X", sum)
+			default:
+				buf := make([]byte, 8)
+				binary.BigEndian.PutUint64(buf, sum)
+				out = base64.StdEncoding.EncodeToString(buf)
+			}
+			if *asJSON {
+				outputs = append(outputs, result{File: "stdin", CRC64: out})
+			} else {
+				fmt.Printf("%s  stdin\n", out)
+			}
+			continue
+		}
+
 		matches, _ := filepath.Glob(pattern)
 		for _, path := range matches {
 			sum, err := computeCRC64(path)
