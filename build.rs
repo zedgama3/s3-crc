@@ -2,9 +2,9 @@ use std::fs;
 use std::path::Path;
 
 #[cfg(windows)]
-use std::collections::HashMap;
-#[cfg(windows)]
 use serde::Deserialize;
+#[cfg(windows)]
+use std::collections::HashMap;
 
 fn main() {
     println!("cargo:rerun-if-changed=versioninfo.json");

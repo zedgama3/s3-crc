@@ -15,7 +15,11 @@ const BUFFER_SIZE: usize = 32 * 1024;
 static CRC64_TABLE: Lazy<[u64; 256]> = Lazy::new(|| make_table(NVME_POLY));
 
 #[derive(Parser)]
-#[command(name = "s3-crc", version, about = "Compute CRC64-NVMe checksums compatible with AWS S3.")]
+#[command(
+    name = "s3-crc",
+    version,
+    about = "Compute CRC64-NVMe checksums compatible with AWS S3."
+)]
 struct Cli {
     /// Output checksum as uppercase hex
     #[arg(long)]

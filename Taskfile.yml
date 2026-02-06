@@ -63,3 +63,30 @@ tasks:
     cmds:
       - powershell -NoProfile -Command "if (Test-Path '{{.OUTPUT_DIR}}') { Remove-Item -Recurse -Force '{{.OUTPUT_DIR}}' }"
       - powershell -NoProfile -Command "if (Test-Path 'target') { Remove-Item -Recurse -Force 'target' }"
+
+  fmt:
+    desc: Format Rust sources.
+    cmds:
+      - cargo fmt --all
+
+  fmt:check:
+    internal: true
+    cmds:
+      - cargo fmt --all -- --check
+
+  lint:
+    desc: Run Clippy with warnings as errors.
+    cmds:
+      - cargo clippy --all-targets --all-features -- -D warnings
+
+  test:
+    desc: Execute the test suite.
+    cmds:
+      - cargo test
+
+  check:
+    desc: Run formatting, linting, and tests.
+    cmds:
+      - task: fmt:check
+      - task: lint
+      - task: test
