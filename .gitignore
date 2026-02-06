@@ -1,3 +1,6 @@
 *.png
 *.exe
 crc64
+target/
+bin/
+s3-crc

@@ -13,8 +13,10 @@ A simple command-line utility to compute **CRC64-NVMe** checksums (compatible wi
 
 ## Installation
 
+Build and install from source with [Cargo](https://www.rust-lang.org/tools/install):
+
 ```sh
-go install github.com/zedgama3/s3-crc@latest
+cargo install --path .
 ```
 
 ## Usage

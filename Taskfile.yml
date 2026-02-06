@@ -1,10 +1,8 @@
 version: '3'
 
 vars:
-  APP_NAME: 'crc64'
+  APP_NAME: 'crc64' # Must match the binary name in Cargo.toml
   OUTPUT_DIR: bin
-  MAIN_PACKAGE: .
-  LDFLAGS: -s -w
   VERSION: '{{default "0.0.0" (env "S3CRC_VERSION")}}'
 
 tasks:
@@ -23,15 +21,16 @@ tasks:
   build:linux:
     internal: true
     cmds:
-      - go build -trimpath -ldflags "{{.LDFLAGS}}" -o {{.OUTPUT_DIR}}/{{.APP_NAME}} {{.MAIN_PACKAGE}}
+      - cargo build --release
+      - cp target/release/{{.APP_NAME}} {{.OUTPUT_DIR}}/{{.APP_NAME}}
+      - cp icon.ico {{.OUTPUT_DIR}}/icon.ico
 
   build:windows:
     internal: true
     cmds:
-      - powershell -NoProfile -Command "if (Test-Path 'resource.syso') { Remove-Item -Force 'resource.syso' }"
-      - go run github.com/josephspurrier/goversioninfo/cmd/goversioninfo@latest -icon=icon.ico -company="S3 CRC Contributors" -product-name="s3-crc" -product-version={{.VERSION}} -file-version={{.VERSION}} -original-name="s3-crc.exe" -description="S3 CRC checksum utility"{{if eq .ARCH "amd64"}} -64{{end}}
-      - go build -trimpath -ldflags "{{.LDFLAGS}}" -o {{.OUTPUT_DIR}}/{{.APP_NAME}}.exe {{.MAIN_PACKAGE}}
-      - powershell -NoProfile -Command "if (Test-Path 'resource.syso') { Remove-Item -Force 'resource.syso' }"
+      - cargo build --release
+      - powershell -NoProfile -Command "Copy-Item -Force 'target\\release\\{{.APP_NAME}}.exe' '{{.OUTPUT_DIR}}\\{{.APP_NAME}}.exe'"
+      - powershell -NoProfile -Command "Copy-Item -Force 'icon.ico' '{{.OUTPUT_DIR}}\\icon.ico'"
 
   prepare:output:
     internal: true
@@ -57,10 +56,10 @@ tasks:
     internal: true
     cmds:
       - rm -rf {{.OUTPUT_DIR}}
-      - rm -f resource.syso
+      - rm -rf target
 
   clean:windows:
     internal: true
     cmds:
       - powershell -NoProfile -Command "if (Test-Path '{{.OUTPUT_DIR}}') { Remove-Item -Recurse -Force '{{.OUTPUT_DIR}}' }"
-      - powershell -NoProfile -Command "if (Test-Path 'resource.syso') { Remove-Item -Force 'resource.syso' }"
+      - powershell -NoProfile -Command "if (Test-Path 'target') { Remove-Item -Recurse -Force 'target' }"

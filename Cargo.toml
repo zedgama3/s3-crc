@@ -1,0 +1,21 @@
+[package]
+name = "crc64"
+version = "0.1.0"
+edition = "2021"
+authors = ["S3 CRC Contributors"]
+description = "CRC64-NVMe checksums compatible with AWS S3"
+license = "MIT"
+build = "build.rs"
+
+[dependencies]
+base64 = "0.21"
+clap = { version = "4.5", features = ["derive"] }
+glob = "0.3"
+once_cell = "1.19"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[build-dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+winres = "0.1"
